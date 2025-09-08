@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>테스트 화면 | clsoftlab</title>
+	
+	<link rel="shortcut icon" href="assets/img/favicon.png" type="image/x-icon">
+
+	<link rel="stylesheet" href="assets/css/bootstrap.min.css">
+
+	<link rel="stylesheet" href="assets/plugins/tabler-icons/tabler-icons.min.css">
+
+	<link rel="stylesheet" href="assets/plugins/fontawesome/css/fontawesome.min.css">
+	<link rel="stylesheet" href="assets/plugins/fontawesome/css/all.min.css">
+
+	<link rel="stylesheet" href="assets/css/style.css">
+
+</head>
+
+<body>
+	<div id="global-loader">
+		<div class="page-loader"></div>
+	</div>
+
+	<div class="main-wrapper">
+
+		<div class="header">
+			<div class="main-header">
+				<div class="header-left">
+					<a href="/" class="logo">
+						<img src="assets/img/logo.svg" alt="Logo">
+					</a>
+				</div>
+				<a id="toggle_btn" href="javascript:void(0);" class="btn btn-menubar me-1">
+					<i class="ti ti-arrow-bar-to-left"></i>
+				</a>
+				<a id="mobile_btn" class="mobile_btn" href="#sidebar">
+					<span class="bar-icon"><span></span><span></span><span></span></span>
+				</a>
+			</div>
+		</div>
+		<div th:replace= "common/sidebar :: sidebar" >
+		</div>
+		<div class="page-wrapper">
+			<div class="content">
+
+				<div class="d-md-flex d-block align-items-center justify-content-between page-breadcrumb mb-3">
+					<div class="my-auto">
+						<h2 class="mb-1">개발 테스트 페이지</h2>
+						<nav>
+							<ol class="breadcrumb mb-0">
+								<li class="breadcrumb-item"><a href="#">Home</a></li>
+								<li class="breadcrumb-item active" aria-current="page">Main</li>
+							</ol>
+						</nav>
+					</div>
+				</div>
+				<div class="card">
+					<div class="card-header">
+						<h5 class="card-title mb-0">환영합니다!</h5>
+					</div>
+					<div class="card-body">
+						<p>이 페이지는 개발 테스트를 위한 기본 레이아웃 쉘(Shell)입니다.</p>
+						<p>개발 순서는 CLSOFTLAB 문서 순서대로 입니다.(급여 -> 평가-> 인사 -> ...)</p>
+						<p>TEST화면이고, 아직 db가 설계되지 않았으므로, 문서에 있는대로 임시 테이블을 만들어서 쓸 예정입니다.</p>
+						<p>개발 현황은 README.md에 일자 별로 정리할 예정입니다.</p>
+					</div>
+				</div>
+				</div>
+
+			<div class="footer d-sm-flex align-items-center justify-content-between border-top bg-white p-3">
+				<p class="mb-0">2025 &copy; clsoftlab</p>
+			</div>
+			</div>
+		</div>
+	<script src="assets/js/jquery-3.7.1.min.js"></script>
+	<script src="assets/js/bootstrap.bundle.min.js"></script>
+	<script src="assets/js/jquery.slimscroll.min.js"></script>
+	<script src="https://unpkg.com/feather-icons"></script>
+	<script src="assets/js/script.js"></script>
+	
+</body>
+
+</html>

@@ -1,0 +1,36 @@
+@use "../utils/variables";
+
+.footer {
+    background: variables.$light-600;
+    padding: 150px 0 0;
+    position: relative;
+    z-index: 1;
+    .footer-bottom {
+        margin-top: 40px;
+        background: variables.$gray-900;
+        padding: 15px 0;
+        .footer-bottom-links {
+            a {
+                color: variables.$white;
+                margin-right: 24px;
+                &:hover {
+                    color: variables.$primary;
+                }
+            }
+        }
+    }
+    .flight-img {
+        position: absolute;
+        left: 5%;
+        top: 50%;
+        transform: translateY(-50%);
+        z-index: -1;
+    }
+    .footer-bg {
+        position: absolute;
+        left: 50%;
+        bottom: 0;
+        transform: translateX(-50%);
+        z-index: -1;
+    }
+}

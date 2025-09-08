@@ -1,0 +1,10 @@
+spring:
+  application:
+    name: clsoftlab
+
+  devtools:
+    restart:
+      enabled: true
+  autoconfigure:
+    exclude:
+    - org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration

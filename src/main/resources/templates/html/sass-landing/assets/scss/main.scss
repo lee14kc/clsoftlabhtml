@@ -1,0 +1,44 @@
+/****** Utils ******/
+@use "utils/variables";
+@use "utils/mixins";
+@use "utils/rangepicker-plugin";
+
+/******* Base *******/
+@use "base/base";
+@use "base/background";
+
+/******* Components ******/
+@use "components/alerts";
+@use "components/avatar";
+@use "components/boostrap";
+@use "components/button";
+@use "components/badge";
+@use "components/border";
+@use "components/dropdown";
+@use "components/font";
+@use "components/typography";
+@use "components/forms";
+@use "components/accordion";
+@use "components/cards";
+@use "components/navs-tabs";
+@use "components/grid";
+@use "components/cursor";
+@use "components/tables";
+
+/****** Layout ******/
+@use "layout/common";
+@use "layout/header";
+@use "layout/footer";
+
+
+/******* Pages ******/
+@use "pages/index";
+@use "pages/index2";
+@use "pages/index3";
+
+/******* Vendors ******/
+@use "vendors/meanmenu";
+@use "vendors/select2";
+@use "vendors/datatables";
+
+
