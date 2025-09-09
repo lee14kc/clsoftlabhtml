@@ -34,3 +34,25 @@ VALUES
 ('INS001', '국민연금', 'INSURANCE', 'N', NULL, NULL, 'TEN', 'Y', 'N', 'Y', '4대보험 국민연금 근로자 부담분'),
 ('INS002', '건강보험', 'INSURANCE', 'N', NULL, NULL, 'TEN', 'Y', 'N', 'Y', '4대보험 건강보험 근로자 부담분'),
 ('DED001', '학자금상환', 'DEDUCT', 'N', NULL, NULL, 'WON', 'N', 'N', 'N', '취업 후 학자금 상환 의무공제');
+
+INSERT INTO ZHR_PAY_ITEM
+(ZITEM_CD, ZITEM_NM, ZITEM_TY, ZTAX_YN, ZTAX_TY, ZTAX_PC, ZROUND_TY, ZBACK_YN, ZINSR_YN, ZUSE_YN, ZNOTE)
+VALUES
+('PAY004', '직책수당', 'PAY', 'Y', 'PERCENT', NULL, 'WON', 'N', 'Y', 'Y', '팀장/임원 직책 보유자 수당'),
+('PAY005', '자격수당', 'PAY', 'Y', 'PERCENT', NULL, 'WON', 'N', 'Y', 'Y', '자격증/면허 보유자 수당'),
+('PAY006', '가족수당', 'PAY', 'Y', 'PERCENT', NULL, 'WON', 'N', 'Y', 'Y', '부양가족 기준 지급 수당'),
+('PAY007', '연장근로수당', 'PAY', 'Y', 'PERCENT', NULL, 'WON', 'N', 'Y', 'Y', '연장/야간/휴일 근로 수당'),
+('PAY008', '차량유지비', 'PAY', 'N', NULL, NULL, 'WON', 'N', 'N', 'Y', '개인 차량 유지보조비'),
+('PAY009', '성과급', 'PAY', 'Y', 'PERCENT', NULL, 'TEN', 'N', 'Y', 'Y', '목표 달성 시 성과급 지급'),
+('PAY010', '휴가비', 'PAY', 'N', NULL, NULL, 'WON', 'N', 'N', 'Y', '정기 휴가비 지원'),
+('TAX002', '지방소득세', 'TAX', 'N', NULL, NULL, 'WON', 'Y', 'N', 'Y', '소득세 연계 지방세'),
+('TAX003', '주민세', 'TAX', 'N', NULL, NULL, 'WON', 'Y', 'N', 'Y', '특별세 성격 주민세'),
+('TAX004', '농어촌특별세', 'TAX', 'N', NULL, NULL, 'WON', 'Y', 'N', 'N', '특정 대상자 농어촌특별세'),
+('INS003', '장기요양보험', 'INSURANCE', 'N', NULL, NULL, 'TEN', 'Y', 'N', 'Y', '건강보험 연계 장기요양보험'),
+('INS004', '고용보험', 'INSURANCE', 'N', NULL, NULL, 'TEN', 'Y', 'N', 'Y', '4대보험 고용보험 근로자 부담분'),
+('INS005', '산재보험', 'INSURANCE', 'N', NULL, NULL, 'TEN', 'Y', 'N', 'N', '사용자 부담 관리용'),
+('DED002', '노조비', 'DEDUCT', 'N', NULL, NULL, 'WON', 'N', 'N', 'Y', '노동조합 조합비'),
+('DED003', '사내대출상환', 'DEDUCT', 'N', NULL, NULL, 'WON', 'N', 'N', 'Y', '사내대출 원리금 상환'),
+('DED004', '기숙사비', 'DEDUCT', 'N', NULL, NULL, 'WON', 'N', 'N', 'Y', '사내 기숙사 사용료'),
+('DED005', '복지기금', 'DEDUCT', 'N', NULL, NULL, 'WON', 'N', 'N', 'Y', '동호회비/복지기금'),
+('DED006', '개인연금', 'DEDUCT', 'N', NULL, NULL, 'WON', 'N', 'N', 'Y', '개인연금(회사 대납 후 공제)');
