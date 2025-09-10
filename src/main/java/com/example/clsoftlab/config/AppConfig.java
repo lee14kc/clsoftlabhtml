@@ -9,7 +9,7 @@ import org.springframework.context.annotation.Configuration;
 public class AppConfig {
 
     @Bean
-    public ModelMapper payItemMapper() {
+    public ModelMapper modelMapper() {
         return new ModelMapper();
     }
 

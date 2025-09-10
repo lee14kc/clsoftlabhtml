@@ -1,5 +1,7 @@
 package com.example.clsoftlab.service;
 
+import java.util.Optional;
+
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -7,8 +9,13 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import com.example.clsoftlab.dto.PayItemDetailDto;
 import com.example.clsoftlab.dto.PayItemListDto;
+import com.example.clsoftlab.dto.PayItemRequestDto;
+import com.example.clsoftlab.entity.PayItem;
 import com.example.clsoftlab.repository.PayItemRepository;
+
+import jakarta.transaction.Transactional;
 
 @Service
 public class PayItemService {
@@ -27,5 +34,28 @@ public class PayItemService {
 	
 		Pageable pageable = PageRequest.of(page, size, Sort.by("itemName"));
 		return payItemRepository.search(itemName, itemType, useYn, pageable).map(i -> modelMapper.map(i, PayItemListDto.class));
+	}
+	
+	// 항목코드로 검색
+	public Optional<PayItemDetailDto> findByCode (String itemCode) {
+		return payItemRepository.findById(itemCode).map(i -> modelMapper.map(i, PayItemDetailDto.class));
+	}
+	
+	// 새로운 급여 항목 추가
+	@Transactional
+	public void addNewPayItem(PayItemRequestDto payItem) {
+		
+		payItemRepository.save(modelMapper.map(payItem, PayItem.class));
+		return;
+	}
+	
+	// 급여 항목 수정
+	@Transactional
+	public void updatePayItem(String itemCode, PayItemRequestDto payItemDto) { 
+	
+		PayItem payItem = payItemRepository.findById(itemCode)
+				.orElseThrow(() -> new IllegalArgumentException("해당 항목을 찾을 수 없습니다. code=" + itemCode));
+
+		payItem.update(payItemDto);
 	}
 }

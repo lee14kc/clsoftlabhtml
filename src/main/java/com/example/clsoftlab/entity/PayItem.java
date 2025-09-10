@@ -2,6 +2,8 @@ package com.example.clsoftlab.entity;
 
 import java.math.BigDecimal;
 
+import com.example.clsoftlab.dto.PayItemRequestDto;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
@@ -52,5 +54,18 @@ public class PayItem {
 
     @Column(name = "ZNOTE", length = 500)
     private String note;
+    
+    public void update(PayItemRequestDto dto) {
+        this.itemName = dto.getItemName();
+        this.itemType = dto.getItemType();
+        this.taxYn = dto.getTaxYn();
+        this.taxType = dto.getTaxType();
+        this.taxPercent = dto.getTaxPercent();
+        this.roundType = dto.getRoundType();
+        this.backPayYn = dto.getBackPayYn();
+        this.insuranceYn = dto.getInsuranceYn();
+        this.useYn = dto.getUseYn();
+        this.note = dto.getNote();
+    }
 
 }
