@@ -1,4 +1,4 @@
-package com.example.clsoftlab.controller;
+package com.example.clsoftlab.controller.pay;
 
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
@@ -11,12 +11,11 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.example.clsoftlab.dto.PayItemDetailDto;
-import com.example.clsoftlab.dto.PayItemListDto;
-import com.example.clsoftlab.dto.PayItemRequestDto;
-import com.example.clsoftlab.service.PayItemService;
+import com.example.clsoftlab.dto.pay.PayItemDetailDto;
+import com.example.clsoftlab.dto.pay.PayItemListDto;
+import com.example.clsoftlab.dto.pay.PayItemRequestDto;
+import com.example.clsoftlab.service.pay.PayItemService;
 
 /*
 
@@ -37,7 +36,7 @@ import com.example.clsoftlab.service.PayItemService;
 */
 
 @Controller
-@RequestMapping("pay/pay-item")
+@RequestMapping("/pay/pay-item")
 public class PayItemController {
 	
 	private final PayItemService payItemService;
@@ -77,10 +76,9 @@ public class PayItemController {
 	}
 	
 	// itemCode로 급여항목 검색
-	@GetMapping("/{itemCode}")
+	@GetMapping("detail/{itemCode}")
     public ResponseEntity<PayItemDetailDto> findPayItemByCode(@PathVariable String itemCode) {
         
-		System.out.println(itemCode);
 		return payItemService.findByCode(itemCode)
                 .map(dto -> ResponseEntity.ok(dto)) 
                 .orElse(ResponseEntity.notFound().build());
@@ -89,7 +87,7 @@ public class PayItemController {
 	//급여 항목 수정
 	@PutMapping("/{itemCode}")
 	public ResponseEntity<Void> updatePayItem(@PathVariable String itemCode, @RequestBody PayItemRequestDto payItem) {
-	    // itemCode와 DTO를 서비스 계층으로 넘겨 수정 로직을 수행합니다.
+		
 	    payItemService.updatePayItem(itemCode, payItem);
 	    return ResponseEntity.ok().build();
 	}

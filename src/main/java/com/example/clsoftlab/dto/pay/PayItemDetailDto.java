@@ -1,4 +1,4 @@
-package com.example.clsoftlab.dto;
+package com.example.clsoftlab.dto.pay;
 
 import java.math.BigDecimal;
 

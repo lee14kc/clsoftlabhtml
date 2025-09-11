@@ -33,11 +33,7 @@ VALUES
 ('TAX001', '소득세', 'TAX', 'N', NULL, NULL, 'WON', 'Y', 'N', 'Y', '근로소득세 갑근세 원천징수'),
 ('INS001', '국민연금', 'INSURANCE', 'N', NULL, NULL, 'TEN', 'Y', 'N', 'Y', '4대보험 국민연금 근로자 부담분'),
 ('INS002', '건강보험', 'INSURANCE', 'N', NULL, NULL, 'TEN', 'Y', 'N', 'Y', '4대보험 건강보험 근로자 부담분'),
-('DED001', '학자금상환', 'DEDUCT', 'N', NULL, NULL, 'WON', 'N', 'N', 'N', '취업 후 학자금 상환 의무공제');
-
-INSERT INTO ZHR_PAY_ITEM
-(ZITEM_CD, ZITEM_NM, ZITEM_TY, ZTAX_YN, ZTAX_TY, ZTAX_PC, ZROUND_TY, ZBACK_YN, ZINSR_YN, ZUSE_YN, ZNOTE)
-VALUES
+('DED001', '학자금상환', 'DEDUCT', 'N', NULL, NULL, 'WON', 'N', 'N', 'N', '취업 후 학자금 상환 의무공제'),
 ('PAY004', '직책수당', 'PAY', 'Y', 'PERCENT', NULL, 'WON', 'N', 'Y', 'Y', '팀장/임원 직책 보유자 수당'),
 ('PAY005', '자격수당', 'PAY', 'Y', 'PERCENT', NULL, 'WON', 'N', 'Y', 'Y', '자격증/면허 보유자 수당'),
 ('PAY006', '가족수당', 'PAY', 'Y', 'PERCENT', NULL, 'WON', 'N', 'Y', 'Y', '부양가족 기준 지급 수당'),
@@ -56,3 +52,4 @@ VALUES
 ('DED004', '기숙사비', 'DEDUCT', 'N', NULL, NULL, 'WON', 'N', 'N', 'Y', '사내 기숙사 사용료'),
 ('DED005', '복지기금', 'DEDUCT', 'N', NULL, NULL, 'WON', 'N', 'N', 'Y', '동호회비/복지기금'),
 ('DED006', '개인연금', 'DEDUCT', 'N', NULL, NULL, 'WON', 'N', 'N', 'Y', '개인연금(회사 대납 후 공제)');
+

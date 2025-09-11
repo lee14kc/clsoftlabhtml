@@ -2,7 +2,7 @@ package com.example.clsoftlab.entity;
 
 import java.math.BigDecimal;
 
-import com.example.clsoftlab.dto.PayItemRequestDto;
+import com.example.clsoftlab.dto.pay.PayItemRequestDto;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
