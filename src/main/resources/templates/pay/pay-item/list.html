@@ -46,44 +46,46 @@
 						<h5 class="card-title">검색 조건</h5>
 					</div>
 					<div class="card-body">
-						<form action="/pay/pay-item" method="get">
-							<div class="row">
-								<div class="col-md-3">
-									<div class="form-group">
-										<label>항목명</label>
-										<input type="text" class="form-control" placeholder="항목명 검색" name="itemName">
+						<div id="pay-item-search-box">
+							<form action="/pay/pay-item" method="get">
+								<div class="row">
+									<div class="col-md-3">
+										<div class="form-group">
+											<label>항목명</label>
+											<input type="text" class="form-control" placeholder="항목명 검색" name="itemName">
+										</div>
+									</div>
+									<div class="col-md-3">
+										<div class="form-group">
+											<label>항목 유형</label>
+											<select class="form-select" name="itemType">
+												<option value="" >전체</option>
+												<option value="PAY" th:selected="${itemType} == PAY">PAY</option>
+												<option value="DEDUCT" th:selected="${itemType} == DEDUCT">DEDUCT</option>
+												<option value="TAX" th:selected="${itemType} == TAX">TAX</option>
+												<option value="INSURANCE" th:selected="${itemType} == INSURANCE">INSURANCE</option>
+												<option value="BACKPAY" th:selected="${itemType} == BACKPAY">BACKPAY</option>
+											</select>
+										</div>
+									</div>
+									<div class="col-md-3">
+										<div class="form-group">
+											<label>사용 여부</label>
+											<select class="form-select" name="useYn">
+												<option value="">전체</option>
+												<option value="Y" th:selected="${useYn == 'Y'} ">Y</option>
+												<option value="N" th:selected="${useYn == 'N'}">N</option>
+											</select>
+										</div>
+									</div>
+									<div class="col-md-3 d-flex align-items-end">
+										<div class="form-group w-100">
+											<button type="submit" class="btn btn-primary w-100">조회</button>
+										</div>
 									</div>
 								</div>
-								<div class="col-md-3">
-									<div class="form-group">
-										<label>항목 유형</label>
-										<select class="form-select" name="itemType">
-											<option value="" >전체</option>
-											<option value="PAY" th:selected="${itemType} == PAY">PAY</option>
-											<option value="DEDUCT" th:selected="${itemType} == DEDUCT">DEDUCT</option>
-											<option value="TAX" th:selected="${itemType} == TAX">TAX</option>
-											<option value="INSURANCE" th:selected="${itemType} == INSURANCE">INSURANCE</option>
-											<option value="BACKPAY" th:selected="${itemType} == BACKPAY">BACKPAY</option>
-										</select>
-									</div>
-								</div>
-								<div class="col-md-3">
-									<div class="form-group">
-										<label>사용 여부</label>
-										<select class="form-select" name="useYn">
-											<option value="">전체</option>
-											<option value="Y" th:selected="${useYn == 'Y'} ">Y</option>
-											<option value="N" th:selected="${useYn == 'N'}">N</option>
-										</select>
-									</div>
-								</div>
-								<div class="col-md-3 d-flex align-items-end">
-									<div class="form-group w-100">
-										<button type="submit" class="btn btn-primary w-100">조회</button>
-									</div>
-								</div>
-							</div>
-						</form>
+							</form>
+						</div>
 					</div>
 				</div>
 

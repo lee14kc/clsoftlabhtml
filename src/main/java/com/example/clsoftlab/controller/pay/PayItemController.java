@@ -1,5 +1,6 @@
 package com.example.clsoftlab.controller.pay;
 
+
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -11,11 +12,14 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.example.clsoftlab.dto.pay.PayItemDetailDto;
 import com.example.clsoftlab.dto.pay.PayItemListDto;
 import com.example.clsoftlab.dto.pay.PayItemRequestDto;
 import com.example.clsoftlab.service.pay.PayItemService;
+
+import jakarta.validation.Valid;
 
 /*
 
@@ -69,7 +73,7 @@ public class PayItemController {
 	
 	//급여 항목 추가
 	@PostMapping("")
-	public ResponseEntity<Void> addNewPayItem (@RequestBody PayItemRequestDto payItem) {
+	public ResponseEntity<Void> addNewPayItem (@Valid @RequestBody PayItemRequestDto payItem) {
 		
 		payItemService.addNewPayItem(payItem);
 		return ResponseEntity.ok().build();
@@ -86,10 +90,28 @@ public class PayItemController {
 	
 	//급여 항목 수정
 	@PutMapping("/{itemCode}")
-	public ResponseEntity<Void> updatePayItem(@PathVariable String itemCode, @RequestBody PayItemRequestDto payItem) {
+	public ResponseEntity<Void> updatePayItem(@PathVariable String itemCode, @Valid @RequestBody PayItemRequestDto payItem) {
 		
 	    payItemService.updatePayItem(itemCode, payItem);
 	    return ResponseEntity.ok().build();
+	}
+	
+	// 급여 항목 검색 
+	@ResponseBody
+	@GetMapping("/list")
+	public Page<PayItemListDto> getPayItemList(@RequestParam(defaultValue = "") String itemName, @RequestParam(defaultValue = "") String itemType,
+			@RequestParam(defaultValue = "") String useYn, @RequestParam(required = false) Integer page) { 
+		
+		
+		if (page == null) {
+			page = 0;
+		}
+		int size= 1000;
+		
+		Page<PayItemListDto> itemPage = payItemService.searchPayItem(itemName, itemType, useYn, page, size);
+		
+		
+		return itemPage;
 	}
 
     @GetMapping("test")

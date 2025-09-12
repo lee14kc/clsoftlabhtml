@@ -53,3 +53,64 @@ VALUES
 ('DED005', '복지기금', 'DEDUCT', 'N', NULL, NULL, 'WON', 'N', 'N', 'Y', '동호회비/복지기금'),
 ('DED006', '개인연금', 'DEDUCT', 'N', NULL, NULL, 'WON', 'N', 'N', 'Y', '개인연금(회사 대납 후 공제)');
 
+
+-- 계산 규칙 관리 --
+CREATE TABLE ZHR_PAY_RULE (
+    RULE_ID      BIGINT         NOT NULL AUTO_INCREMENT COMMENT '규칙 고유 ID',
+    ZITEM_CD     VARCHAR(20)    NOT NULL COMMENT '항목 코드 (FK)',
+    ZRULE_TY     VARCHAR(10)    NOT NULL COMMENT '계산 방식 (FORMULA, FIXED, TABLE, SQL)',
+    ZFORMULA     VARCHAR(2000)  NULL     COMMENT '수식 또는 SQL 쿼리',
+    ZFIXED_VAL   DECIMAL(18, 2) NULL     COMMENT '고정 값',
+    ZFROM_DT     DATE           NOT NULL COMMENT '유효 시작일',
+    ZTO_DT       DATE           NOT NULL COMMENT '유효 종료일',
+    ZUSE_YN      CHAR(1)        NOT NULL DEFAULT 'Y' COMMENT '사용 여부 (Y/N)',
+    ZNOTE        VARCHAR(500)   NULL     COMMENT '비고',
+    CREATED_AT   DATETIME       NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '생성 일시',
+    CREATED_BY   VARCHAR(50)    NOT NULL COMMENT '생성자',
+    UPDATED_AT   DATETIME       NULL     COMMENT '수정 일시',
+    UPDATED_BY   VARCHAR(50)    NULL     COMMENT '수정자',
+    PRIMARY KEY (RULE_ID),
+    foreign key (ZITEM_CD) references ZHR_PAY_ITEM(ZITEM_CD),
+    INDEX IX_ZHR_PAY_RULE_01 (ZITEM_CD) -- 항목 코드로 조회가 많으므로 인덱스 추가
+);
+
+
+INSERT INTO ZHR_PAY_RULE 
+(ZITEM_CD, ZRULE_TY, ZFIXED_VAL, ZFORMULA, ZFROM_DT, ZTO_DT, ZUSE_YN, ZNOTE, CREATED_BY) 
+VALUES
+-- PAY (지급 항목) 규칙
+('PAY002', 'FORMULA', NULL, 'BASE_PAY * 1.5', '2024-01-01', '9999-12-31', 'Y', '기본급의 150%를 정기상여금으로 지급', 'system_admin'),
+('PAY003', 'FIXED', 200000.00, NULL, '2024-01-01', '9999-12-31', 'Y', '월 20만원 비과세 식대 정액 지급', 'system_admin'),
+('PAY004', 'FIXED', 350000.00, NULL, '2025-01-01', '9999-12-31', 'Y', '팀장급 직책수당 (2025년 인상분)', 'hr_manager'),
+('PAY004', 'FIXED', 300000.00, NULL, '2024-01-01', '2024-12-31', 'N', '팀장급 직책수당 (구버전)', 'hr_manager'),
+('PAY004', 'TABLE', NULL, 'POSITION_ALLOWANCE_TABLE', '2022-01-01', '9999-12-31', 'Y', '임원 직급 테이블 참조', 'system_admin'),
+('PAY005', 'FIXED', 100000.00, NULL, '2024-01-01', '9999-12-31', 'Y', '정보처리기사 자격수당', 'hr_manager'),
+('PAY005', 'FIXED', 150000.00, NULL, '2024-01-01', '9999-12-31', 'Y', 'AWS Pro 자격수당', 'hr_manager'),
+('PAY006', 'FORMULA', NULL, 'NUM_OF_DEPENDENTS * 50000', '2024-01-01', '9999-12-31', 'Y', '부양가족 1인당 5만원 지급', 'system_admin'),
+('PAY007', 'FORMULA', NULL, '(ORDINARY_WAGE / 209) * 1.5 * OT_HOURS', '2024-01-01', '9999-12-31', 'Y', '통상임금 기준 시간외근로수당 계산', 'system_admin'),
+('PAY008', 'FIXED', 200000.00, NULL, '2024-01-01', '9999-12-31', 'Y', '차량유지비 정액 지원', 'hr_manager'),
+('PAY009', 'FORMULA', NULL, 'BASE_PAY * PERSONAL_RATING * 0.1', '2024-01-01', '9999-12-31', 'Y', '개인 인사고과 연동 성과급', 'system_admin'),
+('PAY010', 'FIXED', 500000.00, NULL, '2024-01-01', '9999-12-31', 'Y', '연 1회 정기 휴가비', 'hr_manager'),
+
+-- TAX (세금 항목) 규칙
+('TAX001', 'SQL', NULL, 'SELECT F_GET_INCOME_TAX(EMP_ID, TAXABLE_INCOME) FROM DUAL', '2025-01-01', '2025-12-31', 'Y', '2025년 귀속 근로소득세 간이세액표 기준', 'tax_manager'),
+('TAX001', 'SQL', NULL, 'SELECT F_GET_INCOME_TAX_2024(EMP_ID, TAXABLE_INCOME) FROM DUAL', '2024-01-01', '2024-12-31', 'N', '2024년 귀속 근로소득세 (구버전)', 'tax_manager'),
+('TAX002', 'FORMULA', NULL, 'INCOME_TAX * 0.1', '2024-01-01', '9999-12-31', 'Y', '소득세의 10% 지방소득세', 'tax_manager'),
+('TAX003', 'SQL', NULL, 'SELECT F_GET_RESIDENT_TAX(EMP_ID) FROM DUAL', '2024-01-01', '9999-12-31', 'Y', '거주지 기준 주민세 계산', 'tax_manager'),
+
+-- INSURANCE (보험 항목) 규칙
+('INS001', 'FORMULA', NULL, 'TAXABLE_INCOME * 0.045', '2024-01-01', '9999-12-31', 'Y', '국민연금 요율 9% 중 근로자 부담분 4.5%', 'system_admin'),
+('INS002', 'FORMULA', NULL, 'TAXABLE_INCOME * 0.03545', '2025-01-01', '9999-12-31', 'Y', '2025년 건강보험 요율 7.09% 중 근로자 부담분', 'system_admin'),
+('INS002', 'FORMULA', NULL, 'TAXABLE_INCOME * 0.035', '2024-01-01', '2024-12-31', 'N', '2024년 건강보험 요율 7.0% 중 근로자 부담분', 'system_admin'),
+('INS003', 'FORMULA', NULL, 'HEALTH_INSURANCE_PREMIUM * 0.1295', '2025-01-01', '9999-12-31', 'Y', '2025년 장기요양보험 요율 (건강보험료의 12.95%)', 'system_admin'),
+('INS003', 'FORMULA', NULL, 'HEALTH_INSURANCE_PREMIUM * 0.1281', '2024-01-01', '2024-12-31', 'N', '2024년 장기요양보험 요율', 'system_admin'),
+('INS004', 'FORMULA', NULL, 'TAXABLE_INCOME * 0.009', '2024-01-01', '9999-12-31', 'Y', '고용보험 요율 1.8% 중 근로자 부담분 0.9%', 'system_admin'),
+
+-- DEDUCT (공제 항목) 규칙
+('DED001', 'SQL', NULL, 'SELECT F_GET_STUDENT_LOAN_PAYMENT(EMP_ID, PAY_YM) FROM DUAL', '2024-01-01', '9999-12-31', 'Y', '국세청 학자금 상환액 조회', 'hr_manager'),
+('DED002', 'FIXED', 10000.00, NULL, '2024-01-01', '9999-12-31', 'Y', '노동조합 조합비 정액 공제', 'hr_manager'),
+('DED003', 'SQL', NULL, 'SELECT F_GET_COMPANY_LOAN_PAYMENT(EMP_ID, PAY_YM) FROM DUAL', '2024-01-01', '9999-12-31', 'Y', '개인별 사내대출 상환 스케줄 조회', 'hr_manager'),
+('DED004', 'FIXED', 150000.00, NULL, '2024-01-01', '9999-12-31', 'Y', '기숙사 1인실 사용료 공제', 'hr_manager'),
+('DED004', 'FIXED', 80000.00, NULL, '2024-01-01', '9999-12-31', 'Y', '기숙사 2인실 사용료 공제', 'hr_manager'),
+('DED005', 'FIXED', 20000.00, NULL, '2024-01-01', '9999-12-31', 'Y', '사내 복지기금(상조회비 등) 공제', 'hr_manager'),
+('DED006', 'SQL', NULL, 'SELECT F_GET_PRIVATE_PENSION_PAYMENT(EMP_ID, PAY_YM) FROM DUAL', '2024-01-01', '9999-12-31', 'Y', '개인연금 대납 공제액 조회', 'hr_manager');

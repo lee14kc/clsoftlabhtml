@@ -47,33 +47,33 @@
 						<h5 class="card-title">검색 조건</h5>
 					</div>
 					<div class="card-body">
-						<form action="/pay/rule" method="get">
+						<form action="/pay/pay-rule" method="get">
 							<div class="row">
 								<div class="col-md-3">
 									<div class="form-group">
 										<label>항목코드</label>
-										<input type="text" class="form-control" placeholder="항목코드 검색" name="zitemCd" th:value="${param.zitemCd}">
+										<input type="text" class="form-control" placeholder="항목코드 검색" name="itemCode" th:value="${itemCode}">
 									</div>
 								</div>
 								<div class="col-md-3">
 									<div class="form-group">
 										<label>계산 방식</label>
-										<select class="form-select" name="zruleTy">
+										<select class="form-select" name="ruelType">
 											<option value="">전체</option>
-											<option value="FORMULA" th:selected="${param.zruleTy == 'FORMULA'}">FORMULA</option>
-											<option value="FIXED" th:selected="${param.zruleTy == 'FIXED'}">FIXED</option>
-											<option value="TABLE" th:selected="${param.zruleTy == 'TABLE'}">TABLE</option>
-											<option value="SQL" th:selected="${param.zruleTy == 'SQL'}">SQL</option>
+											<option value="FORMULA" th:selected="${ruleType == 'FORMULA'}">FORMULA</option>
+											<option value="FIXED" th:selected="${ruleType == 'FIXED'}">FIXED</option>
+											<option value="TABLE" th:selected="${ruleType == 'TABLE'}">TABLE</option>
+											<option value="SQL" th:selected="${ruleType == 'SQL'}">SQL</option>
 										</select>
 									</div>
 								</div>
 								<div class="col-md-3">
 									<div class="form-group">
 										<label>사용 여부</label>
-										<select class="form-select" name="zuseYn">
+										<select class="form-select" name="useYn">
 											<option value="">전체</option>
-											<option value="Y" th:selected="${param.zuseYn == 'Y'}">Y</option>
-											<option value="N" th:selected="${param.zuseYn == 'N'}">N</option>
+											<option value="Y" th:selected="${useYn == 'Y'}">Y</option>
+											<option value="N" th:selected="${useYn == 'N'}">N</option>
 										</select>
 									</div>
 								</div>
@@ -98,7 +98,7 @@
 									<tr>
 										<th>항목코드</th>
 										<th>계산방식</th>
-										<th style="width: 40%;">수식/쿼리/값</th>
+										<th style="width: 40%;">수식/쿼리</th>
 										<th>시작일</th>
 										<th>종료일</th>
 										<th>사용여부</th>
@@ -106,48 +106,15 @@
 									</tr>
 								</thead>
 								<tbody>
-									<tr>
-										<td>PAY001</td>
-										<td>FORMULA</td>
-										<td>(BASE_PAY / 209) * 1.5 * OT_HOUR</td>
-										<td>2023-01-01</td>
-										<td>9999-12-31</td>
-										<td>Y</td>
+									<tr th:each="r : ${payRule}">
+										<td th:text="${r.itemCode}"></td>
+										<td th:text="${r.ruleType}"></td>
+										<td th:text="${r.ruleType == 'FIXED' ? r.fixedValue : r.formula}"></td>
+										<td th:text="${r.fromDate}"></td>
+										<td th:text="${r.toDate}"></td>
+										<td th:text="${r.useYn}"></td>
 										<td>
-											<button class="btn btn-primary edit-btn" data-bs-toggle="modal" data-bs-target="#editModal">수정</button>
-										</td>
-									</tr>
-									<tr>
-										<td>DED005</td>
-										<td>FIXED</td>
-										<td>5000</td>
-										<td>2023-01-01</td>
-										<td>9999-12-31</td>
-										<td>Y</td>
-										<td>
-											<button class="btn btn-primary edit-btn" data-bs-toggle="modal" data-bs-target="#editModal">수정</button>
-										</td>
-									</tr>
-									<tr>
-										<td>TAX001</td>
-										<td>SQL</td>
-										<td>SELECT TAX_RATE FROM ZHR_TAX_TABLE WHERE PAY_RANGE_CD = 'A05'</td>
-										<td>2024-01-01</td>
-										<td>2024-12-31</td>
-										<td>Y</td>
-										<td>
-											<button class="btn btn-primary edit-btn" data-bs-toggle="modal" data-bs-target="#editModal">수정</button>
-										</td>
-									</tr>
-									<tr>
-										<td>PAY002</td>
-										<td>TABLE</td>
-										<td>POSITION_PAY_TABLE</td>
-										<td>2023-01-01</td>
-										<td>9999-12-31</td>
-										<td>N</td>
-										<td>
-											<button class="btn btn-primary edit-btn" data-bs-toggle="modal" data-bs-target="#editModal">수정</button>
+											<button class="btn btn-primary edit-btn" data-bs-toggle="modal" data-bs-target="#editModal" th:data-value="${r.ruleId}">수정</button>
 										</td>
 									</tr>
 								</tbody>
@@ -168,24 +135,24 @@
 				                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 				            </div>
 				            <div class="modal-body">
-				                <form id="addRuleForm">
+				                <form id="addPayRule">
 				                    <div class="row">
 										<div class="col-md-4 mb-3">
 											<div class="form-group">
 												<label>항목코드</label>
-												<input type="text" class="form-control" name="zitemCd" required>
+												<input type="text" class="form-control" onclick="selectItemCode()" name="itemCode" readonly="readonly">
 											</div>
 										</div>
 										<div class="col-md-4 mb-3">
 											<div class="form-group">
 												<label>항목명</label>
-												<input type="text" class="form-control" name="zitemName" readonly placeholder="항목코드 입력 시 자동 완성">
+												<input type="text" class="form-control" name="itemName" readonly placeholder="항목코드 입력 시 자동 완성">
 											</div>
 										</div>
 										<div class="col-md-4 mb-3">
 											<div class="form-group">
 												<label>계산 방식</label>
-												<select class="form-select" name="zruleTy">
+												<select class="form-select" name="ruleType">
 													<option value="FORMULA">FORMULA (수식)</option>
 													<option value="FIXED">FIXED (고정값)</option>
 													<option value="TABLE">TABLE (테이블 참조)</option>
@@ -196,19 +163,19 @@
 										<div class="col-md-12 mb-3">
 				                            <div class="form-group">
 				                                <label>수식 / SQL / 테이블명 / 고정값</label>
-				                                <textarea class="form-control" rows="5" name="zformula" placeholder="계산 방식에 맞는 내용을 입력하세요."></textarea>
+				                                <textarea class="form-control" rows="5" name="formula" placeholder="계산 방식에 맞는 내용을 입력하세요."></textarea>
 				                            </div>
 				                        </div>
 										<div class="col-md-4 mb-3">
 											<div class="form-group">
 												<label>시작일</label>
-												<input type="date" class="form-control" name="zfromDt" required>
+												<input type="date" class="form-control" name="fromDate" required>
 											</div>
 										</div>
 										<div class="col-md-4 mb-3">
 											<div class="form-group">
 												<label>종료일</label>
-												<input type="date" class="form-control" name="ztoDt" required>
+												<input type="date" class="form-control" name="toDate" required>
 											</div>
 										</div>
 										<div class="col-md-4 mb-3">
@@ -216,11 +183,11 @@
 												<label>사용여부</label>
 												<div>
 													<div class="form-check form-check-inline">
-														<input class="form-check-input" type="radio" value="Y" checked name="zuseYn">
+														<input class="form-check-input" type="radio" value="Y" checked name="useYn">
 														<label class="form-check-label">Y (사용)</label>
 													</div>
 													<div class="form-check form-check-inline">
-														<input class="form-check-input" type="radio" value="N" name="zuseYn">
+														<input class="form-check-input" type="radio" value="N" name="useYn">
 														<label class="form-check-label">N (미사용)</label>
 													</div>
 												</div>
@@ -236,10 +203,10 @@
 				                </form>
 				            </div>
 				            <div class="modal-footer gap-2">
-				                <button type="reset" form="addRuleForm" class="btn btn-outline-secondary">초기화</button>
+				                <button type="reset" form="addPayRule" class="btn btn-outline-secondary">초기화</button>
 				                <button type="button" class="btn btn-outline-info">규칙 검증</button>
 				                <button type="button" class="btn btn-outline-danger" data-bs-dismiss="modal">취소</button>
-				                <button type="button" class="btn btn-primary">저장</button>
+				                <button type="button" class="btn btn-primary" onclick="addNewPayRule()">저장</button>
 				            </div>
 				        </div>
 				    </div>
@@ -253,25 +220,145 @@
 				                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 				            </div>
 				            <div class="modal-body">
-				                <form id="editRuleForm">
-									<input type="hidden" name="ruleId">
+				                <form id="editPayRule">
 				                    <div class="row">
+										<div class="col-md-4 mb-3">
+											<div class="form-group">
+												<label>항목코드</label>
+												<input type="text" class="form-control" name="itemCode" readonly="readonly">
+												<input type="text" class="form-control" name="ruleId" hidden="">
+											</div>
 										</div>
+										<div class="col-md-4 mb-3">
+											<div class="form-group">
+												<label>항목명</label>
+												<input type="text" class="form-control" name="itemName" readonly="readonly">
+											</div>
+										</div>
+										<div class="col-md-4 mb-3">
+											<div class="form-group">
+												<label>계산 방식</label>
+												<select class="form-select" name="ruleType">
+													<option value="FORMULA">FORMULA (수식)</option>
+													<option value="FIXED">FIXED (고정값)</option>
+													<option value="TABLE">TABLE (테이블 참조)</option>
+													<option value="SQL">SQL (직접 쿼리)</option>
+												</select>
+											</div>
+										</div>
+										<div class="col-md-12 mb-3">
+				                            <div class="form-group">
+				                                <label>수식 / SQL / 테이블명 / 고정값</label>
+				                                <textarea class="form-control" rows="5" name="formula" placeholder="계산 방식에 맞는 내용을 입력하세요."></textarea>
+				                            </div>
+				                        </div>
+										<div class="col-md-4 mb-3">
+											<div class="form-group">
+												<label>시작일</label>
+												<input type="date" class="form-control" name="fromDate" required>
+											</div>
+										</div>
+										<div class="col-md-4 mb-3">
+											<div class="form-group">
+												<label>종료일</label>
+												<input type="date" class="form-control" name="toDate" required>
+											</div>
+										</div>
+										<div class="col-md-4 mb-3">
+											<div class="form-group">
+												<label>사용여부</label>
+												<div>
+													<div class="form-check form-check-inline">
+														<input class="form-check-input" type="radio" value="Y" checked name="useYn">
+														<label class="form-check-label">Y (사용)</label>
+													</div>
+													<div class="form-check form-check-inline">
+														<input class="form-check-input" type="radio" value="N" name="useYn">
+														<label class="form-check-label">N (미사용)</label>
+													</div>
+												</div>
+											</div>
+										</div>
+										<div class="col-md-12 mb-3">
+				                            <div class="form-group">
+				                                <label>비고</label>
+				                                <textarea class="form-control" rows="2" name="znote" maxlength="500"></textarea>
+				                            </div>
+				                        </div>
+				                    </div>
 				                </form>
 				            </div>
 				            <div class="modal-footer gap-2">
 								<button type="button" class="btn btn-outline-info">규칙 검증</button>
 				                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">취소</button>
-				                <button type="button" class="btn btn-primary">변경사항 저장</button>
+				                <button type="button" class="btn btn-primary" onclick="updatePayRule()">변경사항 저장</button>
 							</div>
 				        </div>
 				    </div>
 				</div>
-
+				
+				<div class="modal fade" id="itemSelectModal" tabindex="-1">
+				    <div class="modal-dialog modal-lg modal-dialog-centered">
+				        <div class="modal-content">
+				            <div class="modal-header">
+				                <h5 class="modal-title">급여 항목 선택</h5>
+				                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+				            </div>
+				            <div class="modal-body">
+				                
+				                <div class="card card-body mb-3">
+				                    <form id="modalSearchForm">
+				                        <div class="row">
+				                            <div class="col-md-4">
+				                                <input type="text" class="form-control" placeholder="항목명 검색" name="itemName">
+				                            </div>
+				                            <div class="col-md-3">
+				                                <select class="form-select" name="itemType">
+				                                    <option value="">유형(전체)</option>
+				                                    <option value="PAY">PAY</option>
+				                                    <option value="DEDUCT">DEDUCT</option>
+				                                    <option value="TAX">TAX</option>
+				                                    <option value="INSURANCE">INSURANCE</option>
+				                                    <option value="BACKPAY">BACKPAY</option>
+				                                </select>
+				                            </div>
+				                            <div class="col-md-3">
+				                                <select class="form-select" name="useYn">
+				                                    <option value="">사용(전체)</option>
+				                                    <option value="Y">Y</option>
+				                                    <option value="N">N</option>
+				                                </select>
+				                            </div>
+				                            <div class="col-md-2">
+				                                <button type="submit" class="btn btn-primary w-100">조회</button>
+				                            </div>
+				                        </div>
+				                    </form>
+				                </div>
+				                
+				                <div class="table-responsive">
+				                    <table class="table table-hover datatable" id="item-select-table">
+				                        <thead>
+				                            <tr>
+				                                <th>항목코드</th>
+				                                <th>항목명</th>
+				                                <th>유형</th>
+				                                <th>사용여부</th>
+				                            </tr>
+				                        </thead>
+				                        <tbody id="item-list-body">
+				                            </tbody>
+				                    </table>
+				                </div>
+				
+				            </div>
+				        </div>
+				    </div>
+				</div>
 			</div>
 
 			<div th:replace="~{common/footer :: footer}"></div>
-
+	
 		</div>
 	</div>
 
@@ -282,6 +369,314 @@
 	<script src="/assets/js/jquery.dataTables.min.js"></script>
 	<script src="/assets/js/dataTables.bootstrap5.min.js"></script>
 	<script src="/assets/js/script.js"></script>
+	<script type="text/javascript">
+	
+	 let itemSelectModalInstance;
+	 let itemSelectDataTable;
+	 const addPayRuleForm = document.getElementById('addPayRule');
+	    
+	    document.addEventListener('DOMContentLoaded', function () {
+	        const itemSelectModal = document.getElementById('itemSelectModal');
+	        if (itemSelectModal) {
+	            itemSelectModalInstance = new bootstrap.Modal(itemSelectModal);
+	            
+	         // 모달이 처음 표시될 때 DataTables를 딱 한 번만 초기화하도록 이벤트 추가
+	            itemSelectModal.addEventListener('shown.bs.modal', async function () {
+	            	 // DataTables가 초기화되지 않았다면 초기화
+	                if (!itemSelectDataTable) { 
+	                    initializeDataTable();
+	                }
+	                // 모달이 열릴 때마다 검색창을 초기화하고 데이터를 로드
+	                document.getElementById('modalSearchForm').reset();
+	                await loadPayItems();
+	            });
+	        }
+	        
+	        // 급여 선택 항목에서, 검색시 급여 화면으로 넘어가는걸 방지.
+	        const modalSearchForm = document.getElementById('modalSearchForm');
+	        if (modalSearchForm) {
+	            modalSearchForm.addEventListener('submit', handleModalSearch);
+	        }
+	        
 
+	        // 수정 모달창을 열 때, 불러오기.
+	        const tableBody = document.querySelector('.datatable tbody');
+		    if (tableBody) {
+		        tableBody.addEventListener('click', function(event) {
+		        	
+		            const editButton = event.target.closest('.edit-btn');
+		
+		            
+		            if (editButton) {
+		                const ruleId = editButton.dataset.value; 
+		                findPayRuleDetail(ruleId);
+		            }
+		        });
+		    }
+	        
+	    });
+	    
+	    // 급여 항목 선택 테이블 초기화 함수
+	    function initializeDataTable() {
+	        itemSelectDataTable = $('#item-select-table').DataTable({
+	            // DataTables 옵션 설정
+	            destroy: true,
+	            searching: true, 
+	            lengthChange: true, 
+	            pageLength: 25,       // 한 페이지에 25개씩 표시
+	            info: true,          // 'Showing 1 to 5 of...' 정보 표시
+	            
+	            // 서버에서 받은 JSON 데이터의 키와 테이블 컬럼을 매핑
+	            columns: [ 
+	                { data: 'itemCode' },
+	                { data: 'itemName' },
+	                { data: 'itemType' },
+	                { data: 'useYn' }
+	            ],
+	            
+	            // 각 행(row)이 생성될 때 추가 작업을 수행
+	            createdRow: function(row, data, dataIndex) {
+	                // 클릭 이벤트를 위해 필요한 클래스와 data-* 속성을 추가
+	                $(row).addClass('select-item-row').css('cursor', 'pointer');
+	                $(row).attr('data-code', data.itemCode);
+	                $(row).attr('data-name', data.itemName);
+	            }
+	        });
+	    }
+
+	    // 항목코드 input창 클릭 시 실행될 함수
+	    async function selectItemCode() {
+	        if (itemSelectModalInstance) {
+	        	
+	        	document.getElementById('modalSearchForm').reset();
+	        	
+	            itemSelectModalInstance.show();
+	            await loadPayItems();     // 초기 데이터 로드
+	        }
+	    }
+	    
+	    
+	    // 모달 내 검색 버튼 클릭 시 실행될 핸들러
+	    async function handleModalSearch(event) {
+	        event.preventDefault(); // 폼 기본 제출 방지
+	        const formData = new FormData(event.target);
+	        const searchParams = new URLSearchParams(formData).toString();
+	        await loadPayItems(searchParams);
+	    }
+	    
+	    // fetch를 이용해 PayItem 리스트를 불러오는 함수
+	    async function loadPayItems(searchParams = '') {
+	        const itemListBody = document.getElementById('item-list-body');
+
+	        try {
+	            const apiUrl = `/pay/pay-item/list?${searchParams}`;
+	            const response = await fetch(apiUrl); 
+	            if (!response.ok) throw new Error('데이터 로딩 실패');
+	            
+	            const pageData = await response.json();
+	            const items = pageData.content;
+	            
+	            if (itemSelectDataTable) {
+	            	itemSelectDataTable.clear();	// 1. 기존 데이터 삭제
+	            	itemSelectDataTable.rows.add(items); // 2. 새 데이터 추가
+	                itemSelectDataTable.draw();       // 3. 테이블 다시 그리기
+	            }
+	            
+	        } catch (error) {
+	            console.error(error);
+	            itemListBody.innerHTML = `<tr><td colspan="4">${error.message}</td></tr>`;
+	        }
+	    }
+
+	    // 모달 항목 클릭 시 값 입력 및 모달 닫기
+	    document.addEventListener('click', function(event) {
+	        const selectedRow = event.target.closest('.select-item-row');
+	        if (selectedRow) {
+	            const itemCode = selectedRow.dataset.code;
+	            const itemName = selectedRow.dataset.name;
+	            const addForm = document.getElementById('addPayRule');
+	            addForm.querySelector('input[name="itemCode"]').value = itemCode;
+	            addForm.querySelector('input[name="itemName"]').value = itemName;
+	            if (itemSelectModalInstance) itemSelectModalInstance.hide();
+	        }
+	    });
+	    
+	    // 새 계산 규칙 등록
+	    async function addNewPayRule() {
+		    const formData = new FormData(addPayRuleForm);
+		    const data = Object.fromEntries(formData.entries());
+
+		    
+		    // 항목코드 공백 검사
+		    if (!data.itemCode) {
+		        alert('항목 코드를 입력해주세요.');
+		        return;
+		    }
+		    
+		    // 수식/SQL/테이블명/고정값 검사
+		    if (data.ruleType === 'FIXED') {
+		    	
+		        if (!data.formula || isNaN(data.formula)) {
+		            alert('계산 방식이 FIXED일 경우, 유효한 고정값을 숫자로 입력해야 합니다.');
+		            addPayRuleForm.querySelector('[name="formula"]').focus();
+		            return;
+		        }
+		    } else { // FORMULA, SQL, TABLE 등
+		        if (!data.formula || !data.formula.trim()) {
+		            alert('수식, SQL 또는 테이블명을 반드시 입력해야 합니다.');
+		            addPayRuleForm.querySelector('[name="formula"]').focus();
+		            return;
+		        }
+		    }
+
+		    // 시작일, 종료일 검사
+		    if (!data.fromDate || !data.toDate) {
+		        alert('시작일, 종료일을 반드시 입력해야합니다.');
+		        return;
+		    }
+		    
+		    if (data.fromDate > data.toDate) {
+		        alert('종료일은 시작일보다 빠를 수 없습니다.');
+		        return;
+		    }
+		    
+		    // --- 서버 작업 시작 ---
+		    try {
+		        const response = await fetch(`/pay/pay-rule/checkOverlap?itemCode=${data.itemCode}&fromDate=${data.fromDate}&toDate=${data.toDate}`);
+		        
+		        const checkResult = Number(await response.text());
+		        
+		        if (checkResult > 0) { 
+		            alert('선택하신 항목코드에 해당 기간이 포함된 규칙이 이미 존재합니다.\n시작일 또는 종료일을 수정해주세요.'); 
+		            return;
+		        }
+
+		        // --- 중복 검사를 통과하면 최종 저장 (POST) ---
+		        const saveResponse = await fetch('/pay/pay-rule', {
+		            method: 'POST',
+		            headers: {
+		                'Content-Type': 'application/json',
+		            },
+		            body: JSON.stringify(data),
+		        });
+
+		        if (saveResponse.ok) {
+		            alert('성공적으로 등록되었습니다.');
+		            location.reload();
+		        } else {
+		            const errorText = await saveResponse.text();
+		            alert(`등록에 실패했습니다: ${errorText}`);
+		        }
+
+		    } catch (error) {
+		        console.error('Error:', error);
+		        alert('등록 중 오류가 발생했습니다.');
+		    }
+		}
+	    
+	    
+	    async function findPayRuleDetail(ruleId) {
+		    try {
+		        const response = await fetch(`/pay/pay-rule/detail/${ruleId}`);
+		        if (!response.ok) {
+		            throw new Error('데이터를 불러오는 데 실패했습니다.');
+		        }
+		        const data = await response.json();
+		        const editForm = document.getElementById('editPayRule')
+
+
+		        for (const key in data) {
+		            const field = editForm.querySelector(`[name="${key}"]`);
+		            
+		            if(field) {
+		            	
+		            	if (field.type === 'radio') {
+		            		
+		            		editForm.querySelector(`[name="${key}"][value="${data[key]}"]`).checked = true;
+		            	} else {
+				            field.value = data[key];
+		            	}
+		            }
+		            
+		        }
+		        
+		        if (data.ruleType == 'FIXED') {
+		        	editForm.querySelector('[name="formula"]').value = data.fixedValue;
+		        }
+
+		    } catch (error) {
+		        console.error('Error:', error);
+		        alert(error.message);
+		    }
+		}
+	    
+	    
+	  //계산 규칙 수정
+		async function updatePayRule() {
+		    const editForm = document.getElementById('editPayRule');
+		    const formData = new FormData(editForm);
+		    const data = Object.fromEntries(formData.entries());
+
+		    // 수식/SQL/테이블명/고정값 검사
+		    if (data.ruleType === 'FIXED') {
+		    	
+		        if (!data.formula || isNaN(data.formula)) {
+		            alert('계산 방식이 FIXED일 경우, 유효한 고정값을 숫자로 입력해야 합니다.');
+		            addPayRuleForm.querySelector('[name="formula"]').focus();
+		            return;
+		        }
+		    } else { // FORMULA, SQL, TABLE 등
+		        if (!data.formula || !data.formula.trim()) {
+		            alert('수식, SQL 또는 테이블명을 반드시 입력해야 합니다.');
+		            addPayRuleForm.querySelector('[name="formula"]').focus();
+		            return;
+		        }
+		    }
+
+		    // 시작일, 종료일 검사
+		    if (!data.fromDate || !data.toDate) {
+		        alert('시작일, 종료일을 반드시 입력해야합니다.');
+		        return;
+		    }
+		    
+		    if (data.fromDate > data.toDate) {
+		        alert('종료일은 시작일보다 빠를 수 없습니다.');
+		        return;
+		    }
+		    
+		    try {
+				const checkresponse = await fetch(`/pay/pay-rule/checkOverlap/edit?itemCode=${data.itemCode}&ruleId=${data.ruleId}&fromDate=${data.fromDate}&toDate=${data.toDate}`);
+		        
+		        const checkResult = Number(await checkresponse.text());
+		        
+		        if (checkResult > 0) { 
+		            alert('선택하신 항목코드에 해당 기간이 포함된 규칙이 이미 존재합니다.\n시작일 또는 종료일을 수정해주세요.'); 
+		            return;
+		        }
+		        
+		        const url = `/pay/pay-rule/${data.ruleId}`;
+		        const response = await fetch(url, {
+		            method: 'PUT', 
+		            headers: {
+		                'Content-Type': 'application/json',
+		            },
+		            body: JSON.stringify(data),
+		        });
+
+		        if (response.ok) {
+		            alert('성공적으로 수정되었습니다.');
+		            location.reload(); // 성공 시 페이지 새로고침
+		        } else {
+		            const errorText = await response.text();
+		            alert(`수정에 실패했습니다: ${errorText}`);
+		        }
+		    } catch (error) {
+		        console.error('Error:', error);
+		        alert('수정 중 오류가 발생했습니다.');
+		    }
+		}
+	    
+	
+	</script>
 </body>
 </html>
